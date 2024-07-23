@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Sparkline, SparklineChart } from 'recharts';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, ArrowDownRight, RefreshCcw } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+const generateSparklineData = () => {
+  return [...Array(20)].map(() => Math.random() * 100);
+};
+
 const cryptoData = [
-  { name: 'Bitcoin', symbol: 'BTC', price: 30000, change: 2.5, marketCap: 580, volume: 25 },
-  { name: 'Ethereum', symbol: 'ETH', price: 2000, change: -1.8, marketCap: 240, volume: 15 },
-  { name: 'Cardano', symbol: 'ADA', price: 0.5, change: 3.2, marketCap: 16, volume: 0.8 },
-  { name: 'Dogecoin', symbol: 'DOGE', price: 0.08, change: 1.5, marketCap: 11, volume: 0.5 },
-  { name: 'Ripple', symbol: 'XRP', price: 0.6, change: -0.7, marketCap: 30, volume: 1.2 },
-  { name: 'Polkadot', symbol: 'DOT', price: 7, change: 4.2, marketCap: 8, volume: 0.4 },
-  { name: 'Solana', symbol: 'SOL', price: 40, change: 5.1, marketCap: 15, volume: 1.1 },
-  { name: 'Chainlink', symbol: 'LINK', price: 12, change: -2.3, marketCap: 6, volume: 0.3 },
+  { name: 'Bitcoin', symbol: 'BTC', price: 30000, change: 2.5, marketCap: 580, volume: 25, sparkline: generateSparklineData() },
+  { name: 'Ethereum', symbol: 'ETH', price: 2000, change: -1.8, marketCap: 240, volume: 15, sparkline: generateSparklineData() },
+  { name: 'Cardano', symbol: 'ADA', price: 0.5, change: 3.2, marketCap: 16, volume: 0.8, sparkline: generateSparklineData() },
+  { name: 'Dogecoin', symbol: 'DOGE', price: 0.08, change: 1.5, marketCap: 11, volume: 0.5, sparkline: generateSparklineData() },
+  { name: 'Ripple', symbol: 'XRP', price: 0.6, change: -0.7, marketCap: 30, volume: 1.2, sparkline: generateSparklineData() },
+  { name: 'Polkadot', symbol: 'DOT', price: 7, change: 4.2, marketCap: 8, volume: 0.4, sparkline: generateSparklineData() },
+  { name: 'Solana', symbol: 'SOL', price: 40, change: 5.1, marketCap: 15, volume: 1.1, sparkline: generateSparklineData() },
+  { name: 'Chainlink', symbol: 'LINK', price: 12, change: -2.3, marketCap: 6, volume: 0.3, sparkline: generateSparklineData() },
 ];
 
 const generateChartData = () => {
@@ -40,6 +44,12 @@ const MetricCard = ({ name, symbol, price, change }) => (
       </p>
     </CardContent>
   </Card>
+);
+
+const TinySparkline = ({ data, color }) => (
+  <SparklineChart width={100} height={30} data={data}>
+    <Sparkline dataKey="value" stroke={color} fill="none" />
+  </SparklineChart>
 );
 
 const CryptoDashboard = () => {
@@ -94,6 +104,7 @@ const CryptoDashboard = () => {
                 <TableHead className="text-right">24h Change</TableHead>
                 <TableHead className="text-right">Market Cap (B)</TableHead>
                 <TableHead className="text-right">Volume (B)</TableHead>
+                <TableHead className="text-right">Trend</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -107,6 +118,12 @@ const CryptoDashboard = () => {
                   </TableCell>
                   <TableCell className="text-right">${crypto.marketCap}B</TableCell>
                   <TableCell className="text-right">${crypto.volume}B</TableCell>
+                  <TableCell className="text-right">
+                    <TinySparkline 
+                      data={crypto.sparkline.map(value => ({ value }))} 
+                      color={crypto.change >= 0 ? "#22c55e" : "#ef4444"}
+                    />
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
