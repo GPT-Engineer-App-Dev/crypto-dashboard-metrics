@@ -3,12 +3,17 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowUpRight, ArrowDownRight, RefreshCcw } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const cryptoData = [
-  { name: 'Bitcoin', symbol: 'BTC', price: 30000, change: 2.5 },
-  { name: 'Ethereum', symbol: 'ETH', price: 2000, change: -1.8 },
-  { name: 'Cardano', symbol: 'ADA', price: 0.5, change: 3.2 },
-  { name: 'Dogecoin', symbol: 'DOGE', price: 0.08, change: 1.5 },
+  { name: 'Bitcoin', symbol: 'BTC', price: 30000, change: 2.5, marketCap: 580, volume: 25 },
+  { name: 'Ethereum', symbol: 'ETH', price: 2000, change: -1.8, marketCap: 240, volume: 15 },
+  { name: 'Cardano', symbol: 'ADA', price: 0.5, change: 3.2, marketCap: 16, volume: 0.8 },
+  { name: 'Dogecoin', symbol: 'DOGE', price: 0.08, change: 1.5, marketCap: 11, volume: 0.5 },
+  { name: 'Ripple', symbol: 'XRP', price: 0.6, change: -0.7, marketCap: 30, volume: 1.2 },
+  { name: 'Polkadot', symbol: 'DOT', price: 7, change: 4.2, marketCap: 8, volume: 0.4 },
+  { name: 'Solana', symbol: 'SOL', price: 40, change: 5.1, marketCap: 15, volume: 1.1 },
+  { name: 'Chainlink', symbol: 'LINK', price: 12, change: -2.3, marketCap: 6, volume: 0.3 },
 ];
 
 const generateChartData = () => {
@@ -48,7 +53,7 @@ const CryptoDashboard = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Crypto Dashboard</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {cryptoData.map((crypto) => (
+        {cryptoData.slice(0, 4).map((crypto) => (
           <MetricCard key={crypto.symbol} {...crypto} />
         ))}
       </div>
@@ -73,6 +78,39 @@ const CryptoDashboard = () => {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <h2 className="text-xl font-semibold">Major Cryptocurrencies</h2>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Symbol</TableHead>
+                <TableHead className="text-right">Price</TableHead>
+                <TableHead className="text-right">24h Change</TableHead>
+                <TableHead className="text-right">Market Cap (B)</TableHead>
+                <TableHead className="text-right">Volume (B)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {cryptoData.map((crypto) => (
+                <TableRow key={crypto.symbol}>
+                  <TableCell className="font-medium">{crypto.name}</TableCell>
+                  <TableCell>{crypto.symbol}</TableCell>
+                  <TableCell className="text-right">${crypto.price.toLocaleString()}</TableCell>
+                  <TableCell className={`text-right ${crypto.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                    {crypto.change}%
+                  </TableCell>
+                  <TableCell className="text-right">${crypto.marketCap}B</TableCell>
+                  <TableCell className="text-right">${crypto.volume}B</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
